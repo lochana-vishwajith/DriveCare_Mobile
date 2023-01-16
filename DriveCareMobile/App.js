@@ -9,14 +9,26 @@ import Login from "./app/components/LoginScreen";
 import Registration from "./app/components/Registration";
 import AuthReducers from "./app/store/reducers";
 import VehicleDetails from "./app/components/VehicleDetails";
+import AccountTypeSelection from "./app/components/AccountTypeSelection";
+import PoliceOfficerLogin from "./app/components/PoliceOfficerLogin";
 
 const MyStack = () => {
   return (
     <Stack.Navigator headerMode="none">
       <Stack.Screen
         options={{ headerShown: false }}
+        component={AccountTypeSelection}
+        name="AccountTypeSelection"
+      />
+      <Stack.Screen
+        options={{ headerShown: false }}
         component={Login}
         name="Login"
+      />
+      <Stack.Screen
+        options={{ headerShown: false }}
+        component={PoliceOfficerLogin}
+        name="PoliceOfficerLogin"
       />
       <Stack.Screen
         options={{ headerShown: false }}
@@ -37,8 +49,18 @@ const AuthStack = () => {
     <Stack.Navigator>
       <Stack.Screen
         options={{ headerShown: false }}
+        component={AccountTypeSelection}
+        name="AccountTypeSelection"
+      />
+      <Stack.Screen
+        options={{ headerShown: false }}
         component={Login}
         name="Login"
+      />
+      <Stack.Screen
+        options={{ headerShown: false }}
+        component={PoliceOfficerLogin}
+        name="PoliceOfficerLogin"
       />
       <Stack.Screen
         options={{ headerShown: false }}
