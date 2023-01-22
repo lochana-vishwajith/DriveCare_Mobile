@@ -15,6 +15,8 @@ const PORT = process.env.PORT || 5000;
 // Configuring dotenv variables
 const MONGO_URI = process.env.MONGO_URI;
 
+app.use("/user", require("./Routes/UserRoutes"));
+
 // Server Setup
 app.listen(PORT, async () => {
   //mongodb connection

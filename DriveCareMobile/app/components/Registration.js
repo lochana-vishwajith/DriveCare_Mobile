@@ -10,6 +10,8 @@ import {
 
 import DropDownPicker from "react-native-dropdown-picker";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useDispatch } from "react-redux";
+import { StoreRegisterDetails } from "../store/actions";
 
 const { height, width } = Dimensions.get("window");
 
@@ -21,10 +23,40 @@ const Registration = ({ navigation, route }) => {
     { label: "No", value: "no" },
   ]);
   const [istaxiDriver, setIsDriver] = useState("no");
+  const [fullName, setFullName] = useState("");
+  const [email, setEmail] = useState("");
+  const [nic, setNic] = useState("");
+  const [DOB, setDob] = useState(0);
+  const [licenseNo, setLicenseNo] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState(0);
+  const [password, setPassword] = useState("");
+  const [drivingProvince, setDrivingProvince] = useState("");
+  const [drivingDistrict, setDrivingDistrict] = useState("");
+
+  const dispatch = useDispatch();
 
   const ontaxiOpen = useCallback(() => {
     setCompanyOpen(false);
   }, []);
+
+  const goToNextPage = () => {
+    const registrationDetails = {
+      fullName: fullName.trim(),
+      email: email.trim(),
+      nic: nic.trim(),
+      DOB: DOB,
+      licenseNo: licenseNo.trim(),
+      phoneNumber: phoneNumber,
+      password: password.trim(),
+      drivingDistrict: drivingDistrict.trim(),
+      drivingProvince: drivingProvince.trim(),
+      isTaxiDriver: istaxiDriver.trim(),
+    };
+
+    console.log("registrationDetails : ", registrationDetails);
+    dispatch(StoreRegisterDetails(registrationDetails));
+    navigation.navigate("vehicleRegister");
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -39,6 +71,7 @@ const Registration = ({ navigation, route }) => {
               label="name"
               mode="outlined"
               style={styles.textInputStyle}
+              onChangeText={(val) => setFullName(val)}
             />
           </View>
         </View>
@@ -51,18 +84,20 @@ const Registration = ({ navigation, route }) => {
               label="name"
               mode="outlined"
               style={styles.textInputStyle}
+              onChangeText={(val) => setNic(val)}
             />
           </View>
         </View>
         <View style={styles.inputboxCon}>
           <View style={styles.labelCon}>
-            <Text style={styles.labelName}>License Number </Text>
+            <Text style={styles.labelName}>Email </Text>
           </View>
           <View style={styles.inputFieldCon}>
             <TextInput
               label="name"
               mode="outlined"
               style={styles.textInputStyle}
+              onChangeText={(val) => setEmail(val)}
             />
           </View>
         </View>
@@ -75,9 +110,25 @@ const Registration = ({ navigation, route }) => {
               label="name"
               mode="outlined"
               style={styles.textInputStyle}
+              onChangeText={(val) => setDob(val)}
+              keyboardType={"numeric"}
             />
           </View>
         </View>
+        <View style={styles.inputboxCon}>
+          <View style={styles.labelCon}>
+            <Text style={styles.labelName}>License Number </Text>
+          </View>
+          <View style={styles.inputFieldCon}>
+            <TextInput
+              label="name"
+              mode="outlined"
+              style={styles.textInputStyle}
+              onChangeText={(val) => setLicenseNo(val)}
+            />
+          </View>
+        </View>
+
         <View style={styles.inputboxCon}>
           <View style={styles.labelCon}>
             <Text style={styles.labelName}>Mobile Number</Text>
@@ -87,6 +138,8 @@ const Registration = ({ navigation, route }) => {
               label="name"
               mode="outlined"
               style={styles.textInputStyle}
+              onChangeText={(val) => setPhoneNumber(val)}
+              keyboardType={"numeric"}
             />
           </View>
         </View>
@@ -99,6 +152,7 @@ const Registration = ({ navigation, route }) => {
               label="name"
               mode="outlined"
               style={styles.textInputStyle}
+              onChangeText={(val) => setPassword(val)}
             />
           </View>
         </View>
@@ -117,7 +171,6 @@ const Registration = ({ navigation, route }) => {
               setItems={setTaxiAskOption}
               placeholder="Select an Option"
               placeholderStyle={styles.placeholderStyles}
-              onOpen={ontaxiOpen}
               zIndex={3000}
               onChangeValue={(val) => setIsDriver(val)}
               zIndexInverse={1000}
@@ -137,6 +190,7 @@ const Registration = ({ navigation, route }) => {
                   label="name"
                   mode="outlined"
                   style={styles.textInputStyle}
+                  onChangeText={(val) => setDrivingProvince(val)}
                 />
               </View>
             </View>
@@ -151,6 +205,7 @@ const Registration = ({ navigation, route }) => {
                   label="name"
                   mode="outlined"
                   style={styles.textInputStyle}
+                  onChangeText={(val) => setDrivingDistrict(val)}
                 />
               </View>
             </View>
@@ -160,9 +215,7 @@ const Registration = ({ navigation, route }) => {
         <View></View>
       </View>
       <View style={styles.nextTxtCon}>
-        <TouchableOpacity
-          onPress={() => navigation.navigate("vehicleRegister")}
-        >
+        <TouchableOpacity onPress={() => goToNextPage()}>
           <Text style={styles.nextTxt}>Next</Text>
         </TouchableOpacity>
       </View>
@@ -252,6 +305,7 @@ const styles = StyleSheet.create({
   },
   nextTxtCon: {
     width: "100%",
+    marginTop: "17%",
   },
   nextTxt: {
     textAlign: "right",

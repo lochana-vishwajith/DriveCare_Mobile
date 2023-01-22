@@ -11,3 +11,13 @@ export const Logout = () => {
     type: "LOGOUT",
   };
 };
+
+export const StoreRegisterDetails = (value) => {
+  return (dispatch) => {
+    console.log("value", value);
+    dispatch({
+      type: "STOREREGISTERDETAILS",
+      payload: value,
+    });
+  };
+};

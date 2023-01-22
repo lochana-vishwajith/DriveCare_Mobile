@@ -6,11 +6,14 @@ import {
   TouchableOpacity,
   TextInput,
   Dimensions,
+  Alert,
 } from "react-native";
 import { useDispatch } from "react-redux";
 import { Login } from "../store/actions";
 import { AntDesign } from "@expo/vector-icons";
 import { SafeAreaView } from "react-native-safe-area-context";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import axios from "axios";
 
 const { height, width } = Dimensions.get("window");
 
@@ -19,9 +22,47 @@ export default function LoginScreen({ navigation, route }) {
   const [password, setPassword] = useState("");
 
   const dispatch = useDispatch();
-  const submit = () => {
-    dispatch(Login(username, password));
-    navigation.navigate("tabNavigator");
+  const submit = async () => {
+    const unpw = {
+      email: username,
+      password: password,
+    };
+    await axios
+      .post("192.168.137.1:5000/user/login", unpw)
+      .then(async (loginDetails) => {
+        console.log("loging details : ", loginDetails.status);
+        if (loginDetails) {
+          await AsyncStorage.setItem(
+            "token",
+            loginDetails.data.user.tokens[0].token
+          );
+          const userData = {
+            token: loginDetails.data.user.tokens[0].token,
+            userDetails: loginDetails.data.user,
+          };
+          dispatch(Login(userData));
+
+          if (userData.token) {
+            console.log("eeee");
+            navigation.navigate("tabNavigator");
+          }
+        } else {
+          Alert.alert(
+            "User Loging Failed",
+            "Please check the username & password again!",
+            [{ text: "OK" }]
+          );
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+
+        Alert.alert(
+          "User Loging Failed",
+          "Please check the username & password again!",
+          [{ text: "OK" }]
+        );
+      });
   };
 
   return (
@@ -38,6 +79,7 @@ export default function LoginScreen({ navigation, route }) {
               label="name"
               mode="outlined"
               style={styles.textInputStyle}
+              onChangeText={(val) => setUsername(val)}
             />
           </View>
         </View>
@@ -50,6 +92,7 @@ export default function LoginScreen({ navigation, route }) {
               label="name"
               mode="outlined"
               style={styles.textInputStyle}
+              onChangeText={(val) => setPassword(val)}
             />
           </View>
         </View>

@@ -11,6 +11,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { Avatar, Button } from "react-native-paper";
 import * as ImagePicker from "expo-image-picker";
 import app from "../../firebase";
+import { useSelector } from "react-redux";
 
 const { height, width } = Dimensions.get("window");
 
@@ -19,6 +20,13 @@ const VehicleDetails = ({ navigation, route }) => {
   const [uploading, setUploading] = useState(false);
   const [downloadURL, setDownloadURL] = useState(null);
   const [imageUploaded, setImageUploaded] = useState(false);
+  const [yom, setYom] = useState(null);
+  const [noofairbags, setNoofairbags] = useState(null);
+  const [registrationNo, setRegistrationNo] = useState(null);
+
+  const userDetails = useSelector(
+    (state) => state.AuthReducers.registerDetails
+  );
 
   // if (!Firebase.apps.length) {
   //   Firebase.initializeApp(firebaseConfig);
@@ -32,11 +40,11 @@ const VehicleDetails = ({ navigation, route }) => {
       quality: 1,
     });
 
-    console.log(result);
+    console.log(result.assets[0].uri);
 
-    if (!result.cancelled) {
-      setImage(result.uri);
-    }
+    setImage(result.assets[0].uri);
+
+    uploadToFirebase();
   };
 
   const uploadToFirebase = async () => {
@@ -79,6 +87,22 @@ const VehicleDetails = ({ navigation, route }) => {
       }
     );
   };
+
+  const registerUser = () => {
+    userDetails["image"] = downloadURL;
+    const details = {
+      userDetails: userDetails,
+      vehicleDetails: {
+        yom,
+        noofairbags,
+        registrationNo,
+      },
+    };
+
+    console.log("user Details", userDetails);
+    // navigation.navigate("Login")
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.profilePicCon}>
@@ -107,6 +131,7 @@ const VehicleDetails = ({ navigation, route }) => {
               label="name"
               mode="outlined"
               style={styles.textInputStyle}
+              onChangeText={(val) => setYom(val)}
             />
           </View>
         </View>
@@ -119,6 +144,7 @@ const VehicleDetails = ({ navigation, route }) => {
               label="name"
               mode="outlined"
               style={styles.textInputStyle}
+              onChangeText={(val) => setNoofairbags(val)}
             />
           </View>
         </View>
@@ -131,12 +157,13 @@ const VehicleDetails = ({ navigation, route }) => {
               label="name"
               mode="outlined"
               style={styles.textInputStyle}
+              onChangeText={(val) => setRegistrationNo(val)}
             />
           </View>
         </View>
       </View>
       <View style={styles.nextTxtCon}>
-        <TouchableOpacity onPress={() => navigation.navigate("Login")}>
+        <TouchableOpacity onPress={() => registerUser()}>
           <Text style={styles.nextTxt}>Finish</Text>
         </TouchableOpacity>
       </View>

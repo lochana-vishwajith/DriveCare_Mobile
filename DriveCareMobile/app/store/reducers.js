@@ -1,5 +1,6 @@
 const initialState = {
   authToken: null,
+  registerDetails: {},
 };
 
 export default (state = initialState, action) => {
@@ -9,10 +10,14 @@ export default (state = initialState, action) => {
         ...state,
         authToken: action.payload,
       };
-
     case "LOGOUT":
       return {
         authToken: null,
+      };
+    case "STOREREGISTERDETAILS":
+      return {
+        ...state, //copy previous state
+        registerDetails: action.payload,
       };
 
     default:
