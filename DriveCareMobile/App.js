@@ -72,6 +72,11 @@ const AuthStack = () => {
         name="vehicleRegister"
         component={VehicleDetails}
       />
+      <Stack.Screen
+        name="tabNavigator"
+        options={{ headerShown: false }}
+        component={TabNavigator}
+      />
     </Stack.Navigator>
   );
 };

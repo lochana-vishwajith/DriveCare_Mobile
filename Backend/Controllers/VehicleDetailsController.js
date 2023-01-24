@@ -9,6 +9,7 @@ const addVehicle = async (details) => {
         yom,
         noofairbags,
         registrationNo,
+        isVehicleHandedOver: false,
       });
 
       VehicleDetails.save()

@@ -14,6 +14,20 @@ const vehicleDetails = new Schema({
     type: String,
     required: true,
   },
+  ownerId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "userdetails",
+    required: false,
+  },
+  isVehicleHandedOver: {
+    type: Boolean,
+    required: true,
+  },
+  handedOverTo: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "userdetails",
+    required: false,
+  },
 });
 
 const VehicleProfile = mongoose.model("vehicledetails", vehicleDetails);
