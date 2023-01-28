@@ -122,10 +122,7 @@ const getUserDetails = async (req, res) => {
   const { id } = req.params;
   try {
     await UserProfile.findById(id)
-      .populate(
-        "preferenceProfileId",
-        "_id ageValue languageValue budgetValue transportValue"
-      )
+      .populate("VehicleDetailsId", "_id  yom noofairbags registrationNo")
       .then((result) => {
         console.log("user details fetched");
         res.status(200).json(result);
