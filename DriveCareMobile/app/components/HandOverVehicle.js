@@ -1,4 +1,5 @@
 import {
+  Alert,
   Dimensions,
   StyleSheet,
   Switch,
@@ -11,6 +12,9 @@ import React from "react";
 import { useState } from "react";
 import SearchableDropdown from "react-native-searchable-dropdown";
 import { Avatar } from "react-native-paper";
+import { useSelector } from "react-redux";
+import axios from "axios";
+import moment from "moment";
 
 const { height, width } = Dimensions.get("window");
 
@@ -31,10 +35,29 @@ const items = [
 const HandOverVehicle = () => {
   const [isEnabled, setIsEnabled] = useState(false);
   const [nic, setNIC] = useState(null);
+  const [handedPerson, setHandedPerson] = useState(null);
+
+  const userDetails = useSelector((state) => state.AuthReducers.userDetails);
 
   const toggleSwitch = () => setIsEnabled((previousState) => !previousState);
 
-  const searchNic = () => console.log(nic);
+  const searchNic = async () => {
+    console.log("nic", nic);
+    await axios
+      .get(`https://drivecare.herokuapp.com/user/getUserDetails/${nic}`)
+      .then((res) => {
+        console.log(res.data);
+        setHandedPerson(res.data);
+      })
+      .catch((err) => {
+        console.log(err);
+        Alert.alert(
+          "Searching Failed",
+          "Error occured in searching. Please try again!",
+          [{ text: "OK" }]
+        );
+      });
+  };
 
   const saveHandOverPerson = () => console.log(nic);
 
@@ -83,20 +106,33 @@ const HandOverVehicle = () => {
             <Text style={styles.touchableTextStyle}>Search Driver</Text>
           </TouchableOpacity>
         </View>
-        <View style={styles.displyCon}>
-          <Avatar.Image source={require("../images/login1.png")} size={120} />
-          <Text style={styles.nameTxt}>Lakshika Medhavini</Text>
-          <Text style={styles.ageTxt}>24 years</Text>
-        </View>
-        <View style={styles.btnCon}>
-          <TouchableOpacity
-            mode="contained"
-            onPress={saveHandOverPerson}
-            style={styles.touchableOpacityStyle}
-          >
-            <Text style={styles.touchableTextStyle}>Save</Text>
-          </TouchableOpacity>
-        </View>
+        {handedPerson === null ? null : (
+          <>
+            <View style={styles.displyCon}>
+              <Avatar.Image
+                source={
+                  handedPerson?.image
+                    ? { uri: handedPerson.Image }
+                    : require("../images/login1.png")
+                }
+                size={120}
+              />
+              <Text style={styles.nameTxt}>{handedPerson.fullName}</Text>
+              <Text style={styles.ageTxt}>
+                {moment(Date.now()).diff(handedPerson.DOB, "years") + " years"}
+              </Text>
+            </View>
+            <View style={styles.btnCon}>
+              <TouchableOpacity
+                mode="contained"
+                onPress={saveHandOverPerson}
+                style={styles.touchableOpacityStyle}
+              >
+                <Text style={styles.touchableTextStyle}>Save</Text>
+              </TouchableOpacity>
+            </View>
+          </>
+        )}
       </View>
     </View>
   );

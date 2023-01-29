@@ -121,7 +121,7 @@ const getUserDetails = async (req, res) => {
   console.log("fetching user details");
   const { id } = req.params;
   try {
-    await UserProfile.findById(id)
+    await UserProfile.findOne({ nic: id })
       .populate("VehicleDetailsId", "_id  yom noofairbags registrationNo")
       .then((result) => {
         console.log("user details fetched");

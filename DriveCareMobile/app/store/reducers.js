@@ -1,6 +1,7 @@
 const initialState = {
   authToken: null,
   registerDetails: {},
+  userDetails: {},
 };
 
 export default (state = initialState, action) => {
@@ -8,7 +9,8 @@ export default (state = initialState, action) => {
     case "LOGIN":
       return {
         ...state,
-        authToken: action.payload,
+        authToken: action.payload.token,
+        userDetails: action.payload.userDetails,
       };
     case "LOGOUT":
       return {
